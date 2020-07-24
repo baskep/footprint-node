@@ -1,0 +1,7 @@
+node_modules/
+logs/
+.nyc_output
+.classpath
+.history/
+.project
+.settings/
