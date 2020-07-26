@@ -2,7 +2,7 @@
 const Mongoose = require('mongoose')
 
 Mongoose.Promise = Promise
-Mongoose.connect('mongodb://127.0.0.1:27017/loveFootPrint', {
+Mongoose.connect('mongodb://127.0.0.1:27017/footprint', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })

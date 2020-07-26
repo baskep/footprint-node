@@ -135,8 +135,6 @@ function recordPath(ctx, elapsed) {
       statusCode = status.code
     }
   }
-  console.log('ctx信息')
-  console.log(ctx)
   // const log = `${config.appName} ${ctx.requestId || null} null ${thread} info ${ctx.groupId || null} ${ctx.corpid || null} ${ctx.userid || null} ${ctx.ip || null} ${ctx.path || null} ${elapsed} ${statusCode} ${ctx.visitorId || null} ${ctx.querystring || null} ${ctx.headers['user-agent']}`
   // console.log('路径记录')
   
