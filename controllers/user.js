@@ -16,7 +16,8 @@ async function test(ctx) {
   //       console.log(result)
   //     })
   // }
-  // let res1 = await User.find({})
+
+  // let user = await User.find({})
   // let res = await Category.find({})
   // for (let index = 0; index < res.length; index++) {
   //   const element = res[index];
