@@ -6,6 +6,7 @@ const CATEGORY_ENUM = require('../enum/category')
 const ResultCode = require('../utils/result_code')
 
 async function test(ctx) {
+  // 生成category
   // for (let index = 0; index < CATEGORY_ENUM.category.length; index++) {
   //   const element = CATEGORY_ENUM.category[index]
   //     const category = new Category({
@@ -17,6 +18,7 @@ async function test(ctx) {
   //     })
   // }
 
+  // 生成category下具体内容
   // let user = await User.find({})
   // let res = await Category.find({})
   // for (let index = 0; index < res.length; index++) {
@@ -39,6 +41,7 @@ async function test(ctx) {
   //     })
   //   }
   // }
+  
   ctx.body = 'test'
 }
 

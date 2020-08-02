@@ -17,6 +17,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-compress": "^5.0.1",
     "log4js": "^6.3.0",
+    "md5": "^2.3.0",
     "mongoose": "^5.9.24"
   }
 }
