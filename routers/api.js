@@ -5,17 +5,26 @@ const Category = require('../controllers/category')
 const InvitationCode = require('../controllers/invitation_code')
 
 const router = new Router()
+const authRouter = new Router()
+const notAuthRouter = new Router()
 
-router.use(UserMiddleware.verify)
+// 不需要登录验证的接口
+notAuthRouter.post('/login', User.login);
+
+authRouter.use(UserMiddleware.verify)
 
 // user
-router.get('/test', User.test)
+authRouter.get('/test', User.test)
 
 // category
-router.get('/category', Category.getCategory)
+authRouter.get('/category', Category.getCategory)
 
 // category
-router.get('/invitation-code', InvitationCode.generateInvitationCode)
+authRouter.get('/invitation-code', InvitationCode.generateInvitationCode)
 
 
-module.exports = router.routes()
+router
+  .use(notAuthRouter.routes())
+  .use(authRouter.routes())
+
+module.exports = router.routes();

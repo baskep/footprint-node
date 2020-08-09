@@ -9,7 +9,14 @@ const userSchema = new Schema({
 
   password: String,
 
-  mobile: String
+  mobile: String,
+
+  avatar: String,
+  
+  isLogin: {
+    type: Boolean,
+    default: false
+  }
 
 }, {
   timestamps: {
@@ -18,15 +25,15 @@ const userSchema = new Schema({
   }
 })
 
-userSchema.pre('save', function (next) {
-  Bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
-    if (err) return next(err)
-    Bcrypt.hash(this.password, salt, (err, hash) => {
-      if (err) return next(err)
-      this.password = hash
-      next()
-    })
-  })
-})
+// userSchema.pre('save', function (next) {
+//   Bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+//     if (err) return next(err)
+//     Bcrypt.hash(this.password, salt, (err, hash) => {
+//       if (err) return next(err)
+//       this.password = hash
+//       next()
+//     })
+//   })
+// })
 
 module.exports = userSchema
