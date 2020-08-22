@@ -10,6 +10,7 @@ const notAuthRouter = new Router()
 
 // 不需要登录验证的接口
 notAuthRouter.post('/login', User.login);
+notAuthRouter.get('/verify-code', User.getVerifyCode);
 
 authRouter.use(UserMiddleware.verify)
 

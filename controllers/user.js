@@ -63,36 +63,63 @@ async function test(ctx) {
   ctx.body = 'test'
 }
 
+async function getVerifyCode(ctx) {
+  let str = ''
+  for (var i = 0; i < 4; i++) {
+    str += String.fromCharCode(Math.floor(Math.random() * 26) + 'a'.charCodeAt(0));
+  }
+  ctx.body = ResultCode.success({
+    code: str
+  })
+}
 
 async function login(ctx) {
-  const { mobile, verifyCode, invitionCode } = ctx.request.body
+  ctx.body = ResultCode.internalServerError('无效的邀请码')
+  const {  mobile, verifyCode, invitionCode } = ctx.request.body
+  const reg = /^1[3-9]\d{9}$/
   const password = ctx.request.headers['authorization'] || ''
+  let userInfo = null
   if (!mobile || !verifyCode) {
     ctx.body = ResultCode.BAD_REQUEST
     return
   }
-  const userInfo = await User.findOne({
+  // 校验
+  if (!reg.test(mobile)) {
+    ctx.body = ResultCode.internalServerError('错误的手机格式')
+  } else if (password.length < 4) {
+    ctx.body = ResultCode.internalServerError('密码不得小于4位')
+  }
+  const userResult = await User.findOne({
     mobile: mobile
   })
+  if (userResult) userInfo = userResult.toObject()
   const token = JWT.sign({
     name: mobile
-  }, secretOrPrivateKey, {
+  }, JWT_KEY, {
     expiresIn: 3600 * 24 * 7 // 7天过期
   })
   // 如果当前用户已经注册
   if (userInfo && Object.keys(userInfo).length) {
+    let userCompleteDataInfo = null
     const userCompleteData = await User.findOne({
       mobile: mobile,
       password: password
     })
+    if (userCompleteData) userCompleteDataInfo = userCompleteData.toObject()
+
     // 判断密码对不对
-    if (userCompleteData && Object.keys(userCompleteData).length) {
+    if (userCompleteDataInfo && Object.keys(userCompleteDataInfo).length) {
       await User.updateOne({
         mobile: mobile
       }, {
         isLogin: true
       })
-      ctx.body = ResultCode.success({ token: token })
+      ctx.body = ResultCode.success({
+        token: token,
+        userName:  userCompleteDataInfo.userName,
+        mobile: mobile,
+        avatar: userCompleteDataInfo.avatar
+      })
     } else {
       ctx.body = ResultCode.AUTH_FAILED
     }
@@ -101,23 +128,38 @@ async function login(ctx) {
     if (!invitionCode) {
       ctx.body = ResultCode.internalServerError('邀请码为空')
     } else {
-      const invitionCodeInfo = InvitationCode.findOne({ code: invitionCode })
+      let invitionCodeInfo = null
+      const invitionCodeInfoResult = await InvitationCode.findOne({
+        code: invitionCode
+      })
+      if (invitionCodeInfoResult) invitionCodeInfo = invitionCodeInfoResult.toObject()
       // 查询到邀请码
       if (invitionCodeInfo && Object.keys(invitionCodeInfo).length) {
         // 已使用
         if (invitionCode.isUse) {
-          ctx.body = ResultCode.internalServerError('验证码已使用')
+          ctx.body = ResultCode.internalServerError('邀请码已使用')
         } else {
           const newUser = new User({
-            userName: mobile,
+            userName: 'user_' + mobile,
             password: password,
             mobile: mobile,
             avatar: ''
           })
           await newUser.save()
-          await InvitationCode.updateOne({ code: invitionCode }, { isUse: true })
-          ctx.body = ResultCode.success({ token: token })
+          await InvitationCode.updateOne({
+            code: invitionCode
+          }, {
+            isUse: true
+          })
+          ctx.body = ResultCode.success({
+            token: token,
+            userName: 'user_' + mobile,
+            mobile: mobile,
+            avatar: ''
+          })
         }
+      } else {
+        ctx.body = ResultCode.internalServerError('无效的邀请码')
       }
     }
   }
@@ -125,5 +167,6 @@ async function login(ctx) {
 
 module.exports = {
   test,
-  login
+  login,
+  getVerifyCode
 }
