@@ -63,6 +63,7 @@ async function test(ctx) {
   ctx.body = 'test'
 }
 
+// 获取验证码
 async function getVerifyCode(ctx) {
   let str = ''
   for (var i = 0; i < 4; i++) {
@@ -73,9 +74,9 @@ async function getVerifyCode(ctx) {
   })
 }
 
+// 登录
 async function login(ctx) {
-  ctx.body = ResultCode.internalServerError('无效的邀请码')
-  const {  mobile, verifyCode, invitionCode } = ctx.request.body
+  const { mobile, verifyCode, invitionCode } = ctx.request.body
   const reg = /^1[3-9]\d{9}$/
   const password = ctx.request.headers['authorization'] || ''
   let userInfo = null
@@ -109,14 +110,11 @@ async function login(ctx) {
 
     // 判断密码对不对
     if (userCompleteDataInfo && Object.keys(userCompleteDataInfo).length) {
-      await User.updateOne({
-        mobile: mobile
-      }, {
-        isLogin: true
-      })
+      await User.updateOne({ mobile: mobile }, { $set: { isLogin: true } })
       ctx.body = ResultCode.success({
+        _id: userCompleteDataInfo._id,
         token: token,
-        userName:  userCompleteDataInfo.userName,
+        userName: userCompleteDataInfo.userName,
         mobile: mobile,
         avatar: userCompleteDataInfo.avatar
       })
@@ -146,17 +144,20 @@ async function login(ctx) {
             avatar: ''
           })
           await newUser.save()
-          await InvitationCode.updateOne({
-            code: invitionCode
-          }, {
-            isUse: true
-          })
-          ctx.body = ResultCode.success({
-            token: token,
-            userName: 'user_' + mobile,
-            mobile: mobile,
-            avatar: ''
-          })
+          await InvitationCode.updateOne({ code: invitionCode }, { $set: { isUse: true } })
+          const saveUserData = await User.findOne({ mobile: mobile })
+          const saveUserInfo = saveUserData.toObject()
+          if (saveUserInfo && Object.keys(saveUserInfo).length) {
+            ctx.body = ResultCode.success({
+              _id: saveUserInfo._id,
+              token: token,
+              userName: 'user_' + mobile,
+              mobile: mobile,
+              avatar: ''
+            })
+          } else {
+            ctx.body = ResultCode.internalServerError('注册失败')
+          }
         }
       } else {
         ctx.body = ResultCode.internalServerError('无效的邀请码')
@@ -165,8 +166,22 @@ async function login(ctx) {
   }
 }
 
+// 注销登录
+async function loginOut(ctx) {
+  const { mobile } = ctx.request.body
+  if (!mobile) {
+    ctx.body = ResultCode.internalServerError('无效的手机号')
+  } else {
+    User.updateOne({ mobile: mobile }, { $set: { isLogin: false } })
+    ctx.body = ResultCode.success({
+      msg: '注销登录成功'
+    })
+  }
+}
+
 module.exports = {
   test,
   login,
+  loginOut,
   getVerifyCode
 }
