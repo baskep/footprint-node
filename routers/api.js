@@ -2,6 +2,7 @@ const Router = require('@koa/router')
 const UserMiddleware = require('../middleware/user')
 const User = require('../controllers/user')
 const Category = require('../controllers/category')
+const CategoryDetail = require('../controllers/category_detail')
 const InvitationCode = require('../controllers/invitation_code')
 
 const router = new Router()
@@ -12,6 +13,7 @@ const notAuthRouter = new Router()
 notAuthRouter.post('/login', User.login);
 notAuthRouter.post('/login-out', User.loginOut);
 notAuthRouter.get('/verify-code', User.getVerifyCode);
+notAuthRouter.get('/empty-footprint', CategoryDetail.getFootprintList)
 
 authRouter.use(UserMiddleware.verify)
 
@@ -21,7 +23,10 @@ authRouter.get('/test', User.test)
 // category
 authRouter.get('/category', Category.getCategory)
 
-// category
+// categoryDetail
+authRouter.get('/footprint', CategoryDetail.getFootprintList)
+
+// invitationCode
 authRouter.get('/invitation-code', InvitationCode.generateInvitationCode)
 
 

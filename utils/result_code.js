@@ -15,7 +15,7 @@ module.exports = {
   },
 
   NOT_LOGIN: genStatus(11001, '用户未登录'),
-  LOGIN_INVALID: genStatus(11003, '你的登录已经失效，请重新登录'),
+  LOGIN_INVALID: genStatus(113, '你的登录已经失效，请重新登录'),
   AUTH_FAILED: genStatus(11004, '密码错误'),
   USER_FROZEN: genStatus(11011, '用户被冻结'),
   USER_NOT_FOUND: genStatus(11012, '用户不存在，或者被管理员删除'),

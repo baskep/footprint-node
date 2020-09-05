@@ -5,13 +5,18 @@ const ResultCode = require('../utils/result_code')
 async function getCategory(ctx) {
   const formatData = []
   const cache = {}
-  const result = await CategoryDetail.find().populate('category')
+  const result = await CategoryDetail.find().populate('category').populate('user')
   result.map(item => {
     const { _id, categoryName, key } = item.category
-    const obj = { id: _id, name: categoryName, key: key, categoryDetail: [] }
+    const obj = {
+      id: _id,
+      name: categoryName,
+      key: key,
+      categoryDetail: []
+    }
     if (!cache[_id]) {
       cache[_id] = 1
-      obj.categoryDetail.push(item) 
+      obj.categoryDetail.push(item)
       formatData.push(obj)
     } else {
       for (let i = 0, len = formatData.length; i < len; i++) {

@@ -75,6 +75,7 @@ async function getVerifyCode(ctx) {
 }
 
 // 登录
+// todo 邀请码使用后废弃
 async function login(ctx) {
   const { mobile, verifyCode, invitionCode } = ctx.request.body
   const reg = /^1[3-9]\d{9}$/
@@ -99,6 +100,7 @@ async function login(ctx) {
   }, JWT_KEY, {
     expiresIn: 3600 * 24 * 7 // 7天过期
   })
+
   // 如果当前用户已经注册
   if (userInfo && Object.keys(userInfo).length) {
     let userCompleteDataInfo = null
@@ -145,6 +147,27 @@ async function login(ctx) {
           })
           await newUser.save()
           await InvitationCode.updateOne({ code: invitionCode }, { $set: { isUse: true } })
+          // 为当前注册用户创建具体分类数据
+          const user = await User.find({ mobile: mobile })
+          const res = await Category.find({})
+          for (let index = 0; index < res.length; index++) {
+            const element = res[index];
+            const category = element
+            const arr = CATEGORY_ENUM.categoryDetail[element.key]
+            for (let j = 0; j < arr.length; j++) {
+              const ele = arr[j];
+              const detail = new CategoryDetail({
+                category: category,
+                user: user[0],
+                categoryDetailName: ele,
+                imageUrl: '',
+                content: '',
+                localtion: '',
+                dateTime: ''
+              })
+              await detail.save()
+            }
+          }
           const saveUserData = await User.findOne({ mobile: mobile })
           const saveUserInfo = saveUserData.toObject()
           if (saveUserInfo && Object.keys(saveUserInfo).length) {
