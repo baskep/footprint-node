@@ -9,13 +9,18 @@ const EmptyCategoryId = '5f22efff606088e6aa66764c'
 
 // 获取足迹列表
 async function getFootprintList(ctx) {
+  const list = []
   const query = ctx.query
   const result = await CategoryDetail.find({
     user: new ObjectId(query.userId || EmptyUserId),
     category: new ObjectId(query.categoryId || EmptyCategoryId)
   }).populate('user')
+  result && result.forEach(u => {
+    const obj = u.toObject()
+    list.push(obj)
+  })
   ctx.body = ResultCode.success({
-    data: result
+    data: list
   })
 }
 
