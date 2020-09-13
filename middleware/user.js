@@ -6,12 +6,20 @@ const JWT_KEY = 'footprint'
 // token验证
 async function verify(ctx, next) {
   const token = ctx.request.headers['authorization'] || ''
-  JWT.verify(token, JWT_KEY, (err, decode) => {
-    if (err) {
-      ctx.body = ResultCode.LOGIN_INVALID
-    }
+  const result = await JWT.verify(token, JWT_KEY, (err, decode) => {
+    return new Promise((resolve, reject) => {
+      if (err) {
+        resolve(false)
+      } else {
+        resolve(true)
+      }
+    })
   })
-  await next()
+  if (result) {
+    await next()
+  } else {
+    ctx.body = ResultCode.LOGIN_INVALID
+  }
 }
 
 module.exports = {
