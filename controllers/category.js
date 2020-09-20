@@ -1,11 +1,24 @@
+const Mongoose = require('mongoose')
+
 const CategoryDetail = require('../models/category_detail')
 
 const ResultCode = require('../utils/result_code')
 
+const ObjectId = Mongoose.Types.ObjectId
+
+// 获取分类数据
 async function getCategory(ctx) {
+  const query = ctx.query
   const formatData = []
   const cache = {}
-  const result = await CategoryDetail.find().populate('category').populate('user')
+  let result = []
+  if (query.userId) {
+    result = await CategoryDetail.find({
+      user: new ObjectId(query.userId)
+    }).populate('category').populate('user')
+  } else {
+    result = await CategoryDetail.find().populate('category').populate('user')
+  }
   result.map(item => {
     const { _id, categoryName, key } = item.category
     const obj = {
@@ -28,10 +41,10 @@ async function getCategory(ctx) {
       }
     }
   })
-  ctx.body = {
-    data: formatData,
-    status: 200
-  }
+  var a = 2
+  ctx.body = ResultCode.success({
+    data: formatData
+  })
 }
 
 module.exports = {

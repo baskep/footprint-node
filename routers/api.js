@@ -13,6 +13,7 @@ const notAuthRouter = new Router()
 notAuthRouter.post('/login', User.login);
 notAuthRouter.post('/login-out', User.loginOut);
 notAuthRouter.get('/verify-code', User.getVerifyCode);
+notAuthRouter.get('/category', Category.getCategory)
 notAuthRouter.get('/empty-footprint', CategoryDetail.getFootprintList)
 
 authRouter.use(UserMiddleware.verify)
@@ -25,6 +26,7 @@ authRouter.get('/category', Category.getCategory)
 
 // categoryDetail
 authRouter.get('/footprint', CategoryDetail.getFootprintList)
+authRouter.post('/edit-list', CategoryDetail.editeCategoryDetail)
 
 // invitationCode
 authRouter.get('/invitation-code', InvitationCode.generateInvitationCode)
