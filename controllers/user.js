@@ -204,9 +204,31 @@ async function loginOut(ctx) {
   }
 }
 
+// 修改用户信息
+async function editUser(ctx) {
+  const { type, mobile, data } = ctx.request.body
+  switch (type) {
+    case 'pd':
+      User.updateOne({ mobile: mobile }, { $set: { password: data } })
+      break;
+    case 'userName':
+      User.updateOne({ mobile: mobile }, { $set: { userName: data } })
+      break;
+    case 'avatar':
+      User.updateOne({ mobile: mobile }, { $set: { avatar: data } })
+      break;
+    default:
+      break;
+  }
+  ctx.body = ResultCode.success({
+    msg: '更改成功'
+  })
+}
+
 module.exports = {
   test,
   login,
   loginOut,
-  getVerifyCode
+  getVerifyCode,
+  editUser,
 }

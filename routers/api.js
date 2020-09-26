@@ -20,6 +20,7 @@ authRouter.use(UserMiddleware.verify)
 
 // user
 authRouter.get('/test', User.test)
+authRouter.post('/edit-user', User.editUser)
 
 // category
 authRouter.get('/category', Category.getCategory)
