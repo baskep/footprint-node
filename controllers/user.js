@@ -101,6 +101,8 @@ async function login(ctx) {
     expiresIn: 3600 * 24 * 7 // 7天过期
   })
 
+  // expiresIn: 3600 * 24 * 7 // 7天过期
+
   // 如果当前用户已经注册
   if (userInfo && Object.keys(userInfo).length) {
     let userCompleteDataInfo = null

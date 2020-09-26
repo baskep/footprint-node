@@ -41,7 +41,6 @@ async function getCategory(ctx) {
       }
     }
   })
-  var a = 2
   ctx.body = ResultCode.success({
     data: formatData
   })
