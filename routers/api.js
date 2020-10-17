@@ -4,6 +4,7 @@ const User = require('../controllers/user')
 const Category = require('../controllers/category')
 const CategoryDetail = require('../controllers/category_detail')
 const InvitationCode = require('../controllers/invitation_code')
+const user = require('../controllers/user')
 
 const router = new Router()
 const authRouter = new Router()
@@ -21,6 +22,7 @@ authRouter.use(UserMiddleware.verify)
 // user
 authRouter.get('/test', User.test)
 authRouter.post('/edit-user', User.editUser)
+authRouter.post('/user-info', User.editUserPd)
 
 // category
 authRouter.get('/category', Category.getCategory)

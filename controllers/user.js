@@ -206,16 +206,13 @@ async function loginOut(ctx) {
 
 // 修改用户信息
 async function editUser(ctx) {
-  const { type, mobile, data } = ctx.request.body
+  const { type, id, data } = ctx.request.body
   switch (type) {
-    case 'pd':
-      User.updateOne({ mobile: mobile }, { $set: { password: data } })
-      break;
     case 'userName':
-      User.updateOne({ mobile: mobile }, { $set: { userName: data } })
+      await User.updateOne({ _id: id }, { $set: { userName: data } })
       break;
     case 'avatar':
-      User.updateOne({ mobile: mobile }, { $set: { avatar: data } })
+      await User.updateOne({ _id: id }, { $set: { avatar: data } })
       break;
     default:
       break;
@@ -225,10 +222,25 @@ async function editUser(ctx) {
   })
 }
 
+// 修改用户密码
+async function editUserPd(ctx) {
+  const { id, oldData, newData } = ctx.request.body
+  const userInfo = await User.findOne({ _id: id, password: oldData })
+  if (!userInfo) {
+    ctx.body = ResultCode.internalServerError('原密码错误')
+  } else {
+    await User.updateOne({ _id: id }, { $set: { password: newData } })
+    ctx.body = ResultCode.success({
+      msg: '更改成功'
+    })
+  }
+}
+
 module.exports = {
   test,
   login,
   loginOut,
   getVerifyCode,
   editUser,
+  editUserPd
 }
