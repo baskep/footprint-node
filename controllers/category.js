@@ -17,7 +17,9 @@ async function getCategory(ctx) {
       user: new ObjectId(query.userId)
     }).populate('category').populate('user')
   } else {
-    result = await CategoryDetail.find().populate('category').populate('user')
+    result = await CategoryDetail.find({
+      user: new ObjectId('5f1d3bc95a09db0484ddbd49')
+    }).populate('category').populate('user')
   }
   result.map(item => {
     const { _id, categoryName, key } = item.category

@@ -14,7 +14,7 @@ const notAuthRouter = new Router()
 notAuthRouter.post('/login', User.login);
 notAuthRouter.post('/login-out', User.loginOut);
 notAuthRouter.get('/verify-code', User.getVerifyCode);
-notAuthRouter.get('/category', Category.getCategory)
+notAuthRouter.get('/empty-category', Category.getCategory)
 notAuthRouter.get('/empty-footprint', CategoryDetail.getFootprintList)
 
 authRouter.use(UserMiddleware.verify)
