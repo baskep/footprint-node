@@ -11,6 +11,7 @@ const authRouter = new Router()
 const notAuthRouter = new Router()
 
 // 不需要登录验证的接口
+notAuthRouter.get('/test', User.test);
 notAuthRouter.post('/login', User.login);
 notAuthRouter.post('/login-out', User.loginOut);
 notAuthRouter.get('/verify-code', User.getVerifyCode);
@@ -20,7 +21,7 @@ notAuthRouter.get('/empty-footprint', CategoryDetail.getFootprintList)
 authRouter.use(UserMiddleware.verify)
 
 // user
-authRouter.get('/test', User.test)
+// authRouter.get('/test', User.test)
 authRouter.post('/edit-user', User.editUser)
 authRouter.post('/user-info', User.editUserPd)
 
