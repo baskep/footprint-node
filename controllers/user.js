@@ -1,14 +1,13 @@
 const JWT = require('jsonwebtoken')
-const md5 = require('md5')
 
 const User = require('../models/user')
 const Category = require('../models/category')
 const CategoryDetail = require('../models/category_detail')
 const InvitationCode = require('../models/invitation_code')
-const CATEGORY_ENUM = require('../enum/category')
 
 const ResultCode = require('../utils/result_code')
-const user = require('../models/user')
+const CATEGORY_ENUM = require('../enum/category')
+const md5 = require('md5')
 
 const JWT_KEY = 'footprint'
 
@@ -67,7 +66,7 @@ async function test(ctx) {
 async function getVerifyCode(ctx) {
   let str = ''
   for (var i = 0; i < 4; i++) {
-    str += String.fromCharCode(Math.floor(Math.random() * 26) + 'a'.charCodeAt(0));
+    str += String.fromCharCode(Math.floor(Math.random() * 26) + 'a'.charCodeAt(0))
   }
   ctx.body = ResultCode.success({
     code: str
